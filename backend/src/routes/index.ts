@@ -9,6 +9,13 @@ import reviewRoutes from './review.routes';
 import chatRoutes from './chat.routes';
 import sellerRoutes from './seller.routes';
 import adminRoutes from './admin.routes';
+import paymentRoutes from './payment.routes';
+import fileRoutes from './file.routes';
+import notificationRoutes from './notification.routes';
+import analyticsRoutes from './analytics.routes';
+import monitoringRoutes from './monitoring.routes';
+import cacheRoutes from './cache.routes';
+import performanceRoutes from './performance.routes';
 
 const router = Router();
 
@@ -23,6 +30,13 @@ router.use('/reviews', reviewRoutes);
 router.use('/chat', chatRoutes);
 router.use('/seller', sellerRoutes);
 router.use('/admin', adminRoutes);
+router.use('/payment', paymentRoutes);
+router.use('/files', fileRoutes);
+router.use('/notifications', notificationRoutes);
+router.use('/analytics', analyticsRoutes);
+router.use('/monitoring', monitoringRoutes);
+router.use('/cache', cacheRoutes);
+router.use('/performance', performanceRoutes);
 
 // API info endpoint
 router.get('/', (_req, res) => {
@@ -39,7 +53,9 @@ router.get('/', (_req, res) => {
       reviews: '/reviews',
       chat: '/chat',
       seller: '/seller',
-      admin: '/admin'
+      admin: '/admin',
+      payment: '/payment',
+      files: '/files'
     }
   });
 });

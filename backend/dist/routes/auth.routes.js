@@ -36,6 +36,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
 const validate_1 = require("../middleware/validate");
+const auth_1 = require("../middleware/auth");
 const authController = __importStar(require("../controllers/auth.controller"));
 const router = (0, express_1.Router)();
 // Register
@@ -52,8 +53,10 @@ router.post('/login', [
 ], validate_1.validate, authController.login);
 // Refresh token
 router.post('/refresh', authController.refreshToken);
+// Get current user
+router.get('/me', auth_1.authenticate, authController.getCurrentUser);
 // Logout
-router.post('/logout', authController.logout);
+router.post('/logout', auth_1.authenticate, authController.logout);
 // Forgot password
 router.post('/forgot-password', [(0, express_validator_1.body)('email').isEmail().normalizeEmail()], validate_1.validate, authController.forgotPassword);
 // Reset password

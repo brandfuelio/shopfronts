@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resetPassword = exports.forgotPassword = exports.logout = exports.refreshToken = exports.login = exports.register = void 0;
+exports.resetPassword = exports.forgotPassword = exports.logout = exports.getCurrentUser = exports.refreshToken = exports.login = exports.register = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const crypto_1 = __importDefault(require("crypto"));
 const errorHandler_1 = require("../middleware/errorHandler");
@@ -185,6 +185,38 @@ const refreshToken = async (req, res, next) => {
     }
 };
 exports.refreshToken = refreshToken;
+const getCurrentUser = async (req, res, next) => {
+    try {
+        const userId = req.user?.id;
+        if (!userId) {
+            throw new errorHandler_1.AppError('User not found', 404);
+        }
+        const user = await database_1.default.user.findUnique({
+            where: { id: userId },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                role: true,
+                avatar: true,
+                emailVerified: true,
+                createdAt: true,
+                updatedAt: true,
+            }
+        });
+        if (!user) {
+            throw new errorHandler_1.AppError('User not found', 404);
+        }
+        res.json({
+            success: true,
+            data: user,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+};
+exports.getCurrentUser = getCurrentUser;
 const logout = async (req, res, next) => {
     try {
         const { refreshToken } = req.cookies;

@@ -24,6 +24,28 @@ enum OrderStatus {
   REFUNDED
 }
 
+// Payment status enum
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+  EXPIRED
+}
+
+// Notification type enum
+enum NotificationType {
+  ORDER
+  PAYMENT
+  PRODUCT
+  MESSAGE
+  SYSTEM
+  PROMOTION
+  REVIEW
+  SUPPORT
+}
+
 // Product status enum
 enum ProductStatus {
   DRAFT
@@ -46,6 +68,7 @@ model User {
   resetTokenExpiry  DateTime?
   isActive          Boolean   @default(true)
   lastLogin         DateTime?
+  stripeCustomerId  String?   // Stripe customer ID
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
@@ -60,6 +83,9 @@ model User {
   adminProfile      AdminProfile?
   refreshTokens     RefreshToken[]
   reviewHelpful     ReviewHelpful[]
+  files             File[]
+  notifications     Notification[]
+  notificationPreferences Json?
 
   @@index([email])
   @@index([role])
@@ -159,6 +185,7 @@ model Product {
   cartItems       CartItem[]
   wishlistItems   WishlistItem[]
   images          ProductImage[]
+  files           File[]
   
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
@@ -225,17 +252,23 @@ model ProductImage {
 
 // Order model
 model Order {
-  id              String      @id @default(cuid())
-  orderNumber     String      @unique
-  status          OrderStatus @default(PENDING)
-  subtotal        Float
-  tax             Float       @default(0)
-  shipping        Float       @default(0)
-  total           Float
-  paymentMethod   String
-  paymentId       String?
-  shippingAddress Json?
-  notes           String?
+  id                String        @id @default(cuid())
+  orderNumber       String        @unique
+  status            OrderStatus   @default(PENDING)
+  paymentStatus     PaymentStatus @default(PENDING)
+  subtotal          Float
+  tax               Float         @default(0)
+  shipping          Float         @default(0)
+  total             Float
+  paymentMethod     String?
+  paymentId         String?
+  paymentIntentId   String?       // Stripe payment intent ID
+  checkoutSessionId String?       // Stripe checkout session ID
+  paymentDetails    Json?         // Additional payment details
+  refundStatus      String?       // Refund status
+  refundDetails     Json?         // Refund details
+  shippingAddress   Json?
+  notes             String?
   
   // Relations
   userId          String
@@ -358,4 +391,48 @@ model RefreshToken {
 
   @@index([userId])
   @@index([token])
+}
+
+// File model
+model File {
+  id         String   @id @default(cuid())
+  filename   String
+  mimetype   String
+  size       Int
+  path       String
+  url        String
+  type       String   // 'product', 'avatar', 'document'
+  thumbnails Json?    // URLs for different thumbnail sizes
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  productId  String?
+  product    Product? @relation(fields: [productId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([userId])
+  @@index([productId])
+  @@index([type])
+}
+
+// Notification model
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  data      Json?            // Additional data specific to notification type
+  read      Boolean          @default(false)
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  // Relations
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([type])
+  @@index([read])
+  @@index([createdAt])
 }

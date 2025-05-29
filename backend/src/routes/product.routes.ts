@@ -1,8 +1,9 @@
-import { Router } from 'express';
+import { Router, Request } from 'express';
 import { body, query, param } from 'express-validator';
 import { validate } from '../middleware/validate';
 import { authenticate, authorize } from '../middleware/auth';
 import * as productController from '../controllers/product.controller';
+import { cache, clearCache, cacheConfigs } from '../middleware/cache';
 
 const router = Router();
 
@@ -19,6 +20,7 @@ router.get(
     query('order').optional().isIn(['asc', 'desc'])
   ],
   validate,
+  cache(cacheConfigs.productList),
   productController.getProducts
 );
 
@@ -31,6 +33,7 @@ router.get(
     query('limit').optional().isInt({ min: 1, max: 100 })
   ],
   validate,
+  cache(cacheConfigs.searchResults),
   productController.searchProducts
 );
 
@@ -51,6 +54,7 @@ router.get(
   '/:id',
   [param('id').isUUID()],
   validate,
+  cache(cacheConfigs.productDetail),
   productController.getProductById
 );
 
@@ -70,6 +74,7 @@ router.post(
     body('images.*.url').optional().isURL()
   ],
   validate,
+  clearCache(['products']),
   productController.createProduct
 );
 
@@ -87,6 +92,7 @@ router.put(
     body('stock').optional().isInt({ min: 0 })
   ],
   validate,
+  clearCache((req) => ['products', `product:${req.params.id}`]),
   productController.updateProduct
 );
 
@@ -97,6 +103,7 @@ router.delete(
   authorize('SELLER'),
   [param('id').isUUID()],
   validate,
+  clearCache((req) => ['products', `product:${req.params.id}`]),
   productController.deleteProduct
 );
 

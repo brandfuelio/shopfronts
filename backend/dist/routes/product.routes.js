@@ -38,6 +38,7 @@ const express_validator_1 = require("express-validator");
 const validate_1 = require("../middleware/validate");
 const auth_1 = require("../middleware/auth");
 const productController = __importStar(require("../controllers/product.controller"));
+const cache_1 = require("../middleware/cache");
 const router = (0, express_1.Router)();
 // Public routes
 // Get all products with filters
@@ -48,13 +49,13 @@ router.get('/', [
     (0, express_validator_1.query)('maxPrice').optional().isFloat({ min: 0 }),
     (0, express_validator_1.query)('sortBy').optional().isIn(['price', 'name', 'createdAt']),
     (0, express_validator_1.query)('order').optional().isIn(['asc', 'desc'])
-], validate_1.validate, productController.getProducts);
+], validate_1.validate, (0, cache_1.cache)(cache_1.cacheConfigs.productList), productController.getProducts);
 // Search products
 router.get('/search', [
     (0, express_validator_1.query)('q').notEmpty().withMessage('Search query is required'),
     (0, express_validator_1.query)('page').optional().isInt({ min: 1 }),
     (0, express_validator_1.query)('limit').optional().isInt({ min: 1, max: 100 })
-], validate_1.validate, productController.searchProducts);
+], validate_1.validate, (0, cache_1.cache)(cache_1.cacheConfigs.searchResults), productController.searchProducts);
 // Get products by category
 router.get('/category/:categoryId', [
     (0, express_validator_1.param)('categoryId').isUUID(),
@@ -62,7 +63,7 @@ router.get('/category/:categoryId', [
     (0, express_validator_1.query)('limit').optional().isInt({ min: 1, max: 100 })
 ], validate_1.validate, productController.getProductsByCategory);
 // Get single product
-router.get('/:id', [(0, express_validator_1.param)('id').isUUID()], validate_1.validate, productController.getProductById);
+router.get('/:id', [(0, express_validator_1.param)('id').isUUID()], validate_1.validate, (0, cache_1.cache)(cache_1.cacheConfigs.productDetail), productController.getProductById);
 // Protected routes (seller only)
 // Create product
 router.post('/', auth_1.authenticate, (0, auth_1.authorize)('SELLER'), [
@@ -73,7 +74,7 @@ router.post('/', auth_1.authenticate, (0, auth_1.authorize)('SELLER'), [
     (0, express_validator_1.body)('stock').optional().isInt({ min: 0 }),
     (0, express_validator_1.body)('images').optional().isArray(),
     (0, express_validator_1.body)('images.*.url').optional().isURL()
-], validate_1.validate, productController.createProduct);
+], validate_1.validate, (0, cache_1.clearCache)(['products']), productController.createProduct);
 // Update product
 router.put('/:id', auth_1.authenticate, (0, auth_1.authorize)('SELLER'), [
     (0, express_validator_1.param)('id').isUUID(),
@@ -82,8 +83,8 @@ router.put('/:id', auth_1.authenticate, (0, auth_1.authorize)('SELLER'), [
     (0, express_validator_1.body)('price').optional().isFloat({ min: 0 }),
     (0, express_validator_1.body)('categoryId').optional().isUUID(),
     (0, express_validator_1.body)('stock').optional().isInt({ min: 0 })
-], validate_1.validate, productController.updateProduct);
+], validate_1.validate, (0, cache_1.clearCache)((req) => ['products', `product:${req.params.id}`]), productController.updateProduct);
 // Delete product
-router.delete('/:id', auth_1.authenticate, (0, auth_1.authorize)('SELLER'), [(0, express_validator_1.param)('id').isUUID()], validate_1.validate, productController.deleteProduct);
+router.delete('/:id', auth_1.authenticate, (0, auth_1.authorize)('SELLER'), [(0, express_validator_1.param)('id').isUUID()], validate_1.validate, (0, cache_1.clearCache)((req) => ['products', `product:${req.params.id}`]), productController.deleteProduct);
 exports.default = router;
 //# sourceMappingURL=product.routes.js.map
