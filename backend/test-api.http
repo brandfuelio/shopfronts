@@ -1,0 +1,160 @@
+### ShopFronts API Test File
+### Use with REST Client extension in VS Code or similar tools
+
+@baseUrl = http://localhost:5000
+@apiUrl = {{baseUrl}}/api/v1
+@contentType = application/json
+
+### Health Check
+GET {{baseUrl}}/health
+
+### API Info
+GET {{apiUrl}}
+
+### Register a new customer
+POST {{apiUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "customer@example.com",
+  "password": "password123",
+  "name": "John Customer",
+  "role": "CUSTOMER"
+}
+
+### Register a seller
+POST {{apiUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "seller@example.com",
+  "password": "password123",
+  "name": "Jane Seller",
+  "role": "SELLER"
+}
+
+### Login
+# @name login
+POST {{apiUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "customer@example.com",
+  "password": "password123"
+}
+
+### Store the token from login response
+@authToken = {{login.response.body.accessToken}}
+
+### Get user profile
+GET {{apiUrl}}/users/profile
+Authorization: Bearer {{authToken}}
+
+### Get all categories
+GET {{apiUrl}}/categories
+
+### Search products
+GET {{apiUrl}}/products?search=laptop&minPrice=500&maxPrice=2000
+
+### Create a chat session
+POST {{apiUrl}}/chat/sessions
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "initialMessage": "I'm looking for a good laptop for programming"
+}
+
+### Send a chat message
+POST {{apiUrl}}/chat/sessions/{sessionId}/messages
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "message": "What about gaming laptops?",
+  "context": {
+    "priceRange": [1000, 2000],
+    "preferences": ["gaming", "high performance"]
+  }
+}
+
+### Get cart
+GET {{apiUrl}}/cart
+Authorization: Bearer {{authToken}}
+
+### Add to cart
+POST {{apiUrl}}/cart/items
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "productId": "product-id-here",
+  "quantity": 1
+}
+
+### Create admin user
+POST {{apiUrl}}/admin/create-admin
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@shopfronts.com",
+  "password": "admin123",
+  "name": "Admin User"
+}
+
+### Admin login
+# @name adminLogin
+POST {{apiUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@shopfronts.com",
+  "password": "admin123"
+}
+
+### Store admin token
+@adminToken = {{adminLogin.response.body.accessToken}}
+
+### Get admin dashboard
+GET {{apiUrl}}/admin/dashboard
+Authorization: Bearer {{adminToken}}
+
+### Seller login
+# @name sellerLogin
+POST {{apiUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "seller@example.com",
+  "password": "password123"
+}
+
+### Store seller token
+@sellerToken = {{sellerLogin.response.body.accessToken}}
+
+### Get seller dashboard
+GET {{apiUrl}}/seller/dashboard
+Authorization: Bearer {{sellerToken}}
+
+### Create a product (as seller)
+POST {{apiUrl}}/products
+Authorization: Bearer {{sellerToken}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Gaming Laptop Pro",
+  "description": "High-performance laptop for gaming and development",
+  "price": 1599.99,
+  "categoryId": "category-id-here",
+  "stock": 10,
+  "images": [
+    "https://example.com/laptop1.jpg",
+    "https://example.com/laptop2.jpg"
+  ],
+  "specifications": {
+    "processor": "Intel i7-12700H",
+    "ram": "32GB DDR5",
+    "storage": "1TB NVMe SSD",
+    "graphics": "RTX 3070 Ti"
+  }
+}
