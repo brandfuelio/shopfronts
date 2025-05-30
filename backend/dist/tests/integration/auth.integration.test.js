@@ -17,7 +17,7 @@ app.use('/api/auth', auth_routes_1.default);
 app.use(errorHandler_1.errorHandler);
 // Connect to database before all tests
 beforeAll(async () => {
-    await (0, database_1.connectDatabase)();
+    await database_1.prisma.$connect();
 });
 // Clean up database before each test
 beforeEach(async () => {

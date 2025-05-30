@@ -30,7 +30,7 @@ export const createPaymentIntent = async (req: Request, res: Response) => {
     });
   } catch (error) {
     logger.error('Error creating payment intent:', error);
-    res.status(500).json({ error: 'Failed to create payment intent' });
+    return res.status(500).json({ error: 'Failed to create payment intent' });
   }
 };
 
@@ -61,7 +61,7 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
     });
   } catch (error) {
     logger.error('Error creating checkout session:', error);
-    res.status(500).json({ error: 'Failed to create checkout session' });
+    return res.status(500).json({ error: 'Failed to create checkout session' });
   }
 };
 
@@ -105,7 +105,7 @@ export const refundPayment = async (req: Request, res: Response) => {
     });
   } catch (error) {
     logger.error('Error creating refund:', error);
-    res.status(500).json({ error: 'Failed to create refund' });
+    return res.status(500).json({ error: 'Failed to create refund' });
   }
 };
 
@@ -129,7 +129,7 @@ export const getPaymentDetails = async (req: Request, res: Response) => {
     });
   } catch (error) {
     logger.error('Error retrieving payment details:', error);
-    res.status(500).json({ error: 'Failed to retrieve payment details' });
+    return res.status(500).json({ error: 'Failed to retrieve payment details' });
   }
 };
 

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FileController = void 0;
 const file_service_1 = require("../services/file.service");
 const errors_1 = require("../utils/errors");
+// import { logger } from '../utils/logger';
 class FileController {
     /**
      * Upload a single file

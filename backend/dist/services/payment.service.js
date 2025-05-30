@@ -71,7 +71,7 @@ class PaymentService {
                         product_data: {
                             name: product.name,
                             description: product.description,
-                            images: product.images,
+                            images: product.screenshots,
                         },
                         unit_amount: Math.round(item.price * 100),
                     },

@@ -138,7 +138,7 @@ class AnalyticsController {
         if (req.user.role !== 'ADMIN') {
             throw new errors_1.AppError('Unauthorized', 403);
         }
-        const { startDate, endDate, type } = req.query;
+        // const { startDate, endDate, type } = req.query;
         // TODO: Implement export functionality
         res.json({
             success: true,

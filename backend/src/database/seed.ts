@@ -78,32 +78,38 @@ const seedDatabase = async () => {
     const productData = [
       {
         name: 'TaskMaster Pro',
+        slug: 'taskmaster-pro',
         description: 'Advanced task management and productivity suite',
         price: 49.99,
         categoryId: createdCategories[0].id,
         sellerId: sellerUser.id,
         features: ['Task tracking', 'Team collaboration', 'Time tracking', 'Reports'],
-        images: ['/api/placeholder/400/300'],
+        screenshots: ['/api/placeholder/400/300'],
+        thumbnail: '/api/placeholder/200/150',
         status: 'ACTIVE' as const,
       },
       {
         name: 'DesignFlow Studio',
+        slug: 'designflow-studio',
         description: 'Professional design tool for creators',
         price: 79.99,
         categoryId: createdCategories[1].id,
         sellerId: sellerUser.id,
         features: ['Vector graphics', 'Photo editing', 'Templates', 'Cloud sync'],
-        images: ['/api/placeholder/400/300'],
+        screenshots: ['/api/placeholder/400/300'],
+        thumbnail: '/api/placeholder/200/150',
         status: 'ACTIVE' as const,
       },
       {
         name: 'CodeBoost IDE',
+        slug: 'codeboost-ide',
         description: 'Intelligent code editor with AI assistance',
         price: 99.99,
         categoryId: createdCategories[2].id,
         sellerId: sellerUser.id,
         features: ['AI code completion', 'Debugging tools', 'Git integration', 'Extensions'],
-        images: ['/api/placeholder/400/300'],
+        screenshots: ['/api/placeholder/400/300'],
+        thumbnail: '/api/placeholder/200/150',
         status: 'ACTIVE' as const,
       },
       {
@@ -113,7 +119,8 @@ const seedDatabase = async () => {
         categoryId: createdCategories[3].id,
         sellerId: sellerUser.id,
         features: ['Real-time analytics', 'A/B testing', 'SEO tools', 'Social media tracking'],
-        images: ['/api/placeholder/400/300'],
+        screenshots: ['/api/placeholder/400/300'],
+        thumbnail: '/api/placeholder/200/150',
         status: 'ACTIVE' as const,
       },
       {
@@ -123,7 +130,8 @@ const seedDatabase = async () => {
         categoryId: createdCategories[4].id,
         sellerId: sellerUser.id,
         features: ['Expense tracking', 'Budget planning', 'Investment tracking', 'Reports'],
-        images: ['/api/placeholder/400/300'],
+        screenshots: ['/api/placeholder/400/300'],
+        thumbnail: '/api/placeholder/200/150',
         status: 'ACTIVE' as const,
       },
     ];
@@ -164,7 +172,7 @@ const seedDatabase = async () => {
     logger.info('✅ Created sample reviews');
 
     // Create a cart for the customer
-    const cart = await prisma.cart.create({
+    await await prisma.cart.create({
       data: {
         userId: customerUser.id,
         items: {
@@ -184,7 +192,7 @@ const seedDatabase = async () => {
     logger.info('✅ Created sample cart');
 
     // Create a sample order
-    const order = await prisma.order.create({
+    await await prisma.order.create({
       data: {
         userId: customerUser.id,
         total: products[0].price + products[1].price,
@@ -195,11 +203,13 @@ const seedDatabase = async () => {
               productId: products[0].id,
               quantity: 1,
               price: products[0].price,
+              total: products[0].price,
             },
             {
               productId: products[1].id,
               quantity: 1,
               price: products[1].price,
+              total: products[1].price,
             },
           ],
         },
@@ -208,8 +218,9 @@ const seedDatabase = async () => {
     logger.info('✅ Created sample order');
 
     // Create a chat session
-    const chatSession = await prisma.chatSession.create({
+    await await prisma.chatSession.create({
       data: {
+        sessionId: `session-${Date.now()}`,
         userId: customerUser.id,
         title: 'Product recommendations',
         messages: {

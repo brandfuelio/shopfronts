@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { FileService } from '../services/file.service';
 import { AppError } from '../utils/errors';
-import { logger } from '../utils/logger';
+// import { logger } from '../utils/logger';
 
 export class FileController {
   /**

@@ -262,7 +262,7 @@ export class MonitoringService {
         const hour = new Date(now.getTime() - i * 3600000);
         const hourKey = `metrics:${hour.toISOString().slice(0, 13)}`;
 
-        const [counts, times] = await Promise.all([
+        const [counts, times]: [Record<string, string>, Record<string, string>] = await Promise.all([
           this.redis.hgetall(`${hourKey}:count`),
           this.redis.hgetall(`${hourKey}:time`),
         ]);
@@ -280,7 +280,7 @@ export class MonitoringService {
             };
           }
 
-          const requestCount = parseInt(count);
+          const requestCount = parseInt(count as string);
           const totalTime = parseFloat(times[key] || '0');
 
           stats.endpoints[endpointKey].count += requestCount;
@@ -322,7 +322,7 @@ export class MonitoringService {
   /**
    * Get error logs
    */
-  static async getErrorLogs(limit: number = 100): Promise<any[]> {
+  static async getErrorLogs(_limit: number = 100): Promise<any[]> {
     // In a real implementation, you would query your logging system
     // This is a placeholder that returns recent errors from memory
     return [];

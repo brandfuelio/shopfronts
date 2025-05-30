@@ -43,6 +43,10 @@ const envSchema = zod_1.z.object({
     EMAIL_FROM: zod_1.z.string().email(),
     EMAIL_FROM_NAME: zod_1.z.string().default('ShopFronts'),
     SENDGRID_API_KEY: zod_1.z.string().optional(),
+    SMTP_HOST: zod_1.z.string().optional(),
+    SMTP_PORT: zod_1.z.string().transform(Number).optional(),
+    SMTP_USER: zod_1.z.string().optional(),
+    SMTP_PASS: zod_1.z.string().optional(),
     // File Storage
     STORAGE_TYPE: zod_1.z.enum(['local', 's3']).default('local'),
     UPLOAD_DIR: zod_1.z.string().default('./uploads'),

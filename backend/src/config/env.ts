@@ -43,6 +43,12 @@ const envSchema = z.object({
   EMAIL_FROM: z.string().email(),
   EMAIL_FROM_NAME: z.string().default('ShopFronts'),
   SENDGRID_API_KEY: z.string().optional(),
+  SMTP_HOST: z.string().optional(),
+  SMTP_PORT: z.string().transform(Number).optional(),
+  SMTP_USER: z.string().optional(),
+  SMTP_PASS: z.string().optional(),
+  SMTP_SECURE: z.string().transform((val: string) => val === 'true').default('false'),
+  SUPPORT_EMAIL: z.string().default('support@shopfronts.com'),
 
   // File Storage
   STORAGE_TYPE: z.enum(['local', 's3']).default('local'),

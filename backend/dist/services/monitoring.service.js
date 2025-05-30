@@ -260,7 +260,7 @@ class MonitoringService {
     /**
      * Get error logs
      */
-    static async getErrorLogs(limit = 100) {
+    static async getErrorLogs(_limit = 100) {
         // In a real implementation, you would query your logging system
         // This is a placeholder that returns recent errors from memory
         return [];

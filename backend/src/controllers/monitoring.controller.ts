@@ -7,7 +7,7 @@ export class MonitoringController {
   /**
    * Health check endpoint
    */
-  static healthCheck = asyncHandler(async (req: Request, res: Response) => {
+  static healthCheck = asyncHandler(async (_req: Request, res: Response) => {
     const checks = await MonitoringService.performHealthChecks();
     const allHealthy = checks.every(check => check.status === 'healthy');
     const hasDegraded = checks.some(check => check.status === 'degraded');
@@ -97,7 +97,7 @@ export class MonitoringController {
   /**
    * Get Prometheus metrics
    */
-  static getPrometheusMetrics = asyncHandler(async (req: Request, res: Response) => {
+  static getPrometheusMetrics = asyncHandler(async (_req: Request, res: Response) => {
     // Format metrics in Prometheus format
     const systemMetrics = MonitoringService.getSystemMetrics();
     const performanceStats = await MonitoringService.getPerformanceStats(1);

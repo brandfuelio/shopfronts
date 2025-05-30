@@ -161,7 +161,7 @@ export class AnalyticsController {
       throw new AppError('Unauthorized', 403);
     }
 
-    const { startDate, endDate, type } = req.query;
+    // const { startDate, endDate, type } = req.query;
 
     // TODO: Implement export functionality
     res.json({

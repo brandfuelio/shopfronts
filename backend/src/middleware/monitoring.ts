@@ -38,7 +38,7 @@ export const performanceMonitoring = (req: Request, res: Response, next: NextFun
     });
 
     // Call original end
-    return originalEnd.apply(res, args);
+    return originalEnd.apply(res, args as any);
   };
 
   next();

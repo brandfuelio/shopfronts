@@ -173,6 +173,8 @@ model Product {
   totalDownloads  Int           @default(0)
   averageRating   Float         @default(0)
   reviewCount     Int           @default(0)
+  viewCount       Int           @default(0)
+  salesCount      Int           @default(0)
   
   // Additional fields
   stock           Int           @default(0)
